@@ -1,0 +1,39 @@
+{
+  "cli": {
+    "version": ">= 3.12.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": {
+        "simulator": false
+      }
+    },
+    "preview": {
+      "distribution": "internal"
+    },
+    "preview1": {
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "production": {
+      "android": {
+        "buildType": "apk"
+      },
+      "ios": {
+                "image": "macos-sonoma-14.6-xcode-16.0"
+              }
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "appleId": "ios_developer@gitam.edu",
+        "ascAppId": "6451466937"
+      }
+    }
+  }
+}

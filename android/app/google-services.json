@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "247442822241",
+    "project_id": "mygitam-2497a",
+    "storage_bucket": "mygitam-2497a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:247442822241:android:be94f6f4e73c8b3d900620",
+        "android_client_info": {
+          "package_name": "com.gitamapps.mygitam"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "247442822241-rsvasbr0qhroo663gmst57eukhjldbo3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.gitamapps.mygitam",
+            "certificate_hash": "b142c0b3b178cf2403642d3905b6bfcf0975a9c0"
+          }
+        },
+        {
+          "client_id": "247442822241-vcb194dskv9leu7rhhgcja4la0vui925.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGOVLtLL5exVREDcoyJAOg0eS7kpjKq4Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "247442822241-vcb194dskv9leu7rhhgcja4la0vui925.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
