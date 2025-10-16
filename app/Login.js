@@ -8,6 +8,7 @@ import {
   Keyboard,
   Alert,
   ImageBackground,
+  TouchableOpacity,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
@@ -145,186 +146,172 @@ const Login = () => {
   }
 
   return (
-   
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.container}
-      ><StatusBar style="auto" backgroundColor="#007367"/>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <ImageBackground
-            source={require('../assets/loginbg.png')}
-            style={styles.background}
-            resizeMode="cover"
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      className="flex-1"
+    >
+      <StatusBar style="auto" backgroundColor="#007367"/>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ImageBackground
+          source={require('../assets/loginbg.png')}
+          className="flex-1"
+          resizeMode="cover"
+        >
+          <ScrollView
+            contentContainerStyle={{ flexGrow: 1 }}
+            keyboardShouldPersistTaps="handled"
+            className="flex-1"
           >
-            <ScrollView
-              contentContainerStyle={{ flexGrow: 1 }}
-              keyboardShouldPersistTaps="handled"
-            >
-              <Center mt={8}>
-                <Image
-                  source={require("../assets/gitam_logo_w.png")}
-                  resizeMode="cover"
-                  style={styles.bannerImg}
-                />
-              </Center>
-    
-              {/* Dynamic Image Based on Role */}
-              <Center mt={8}>
-                <Image
-                  source={roleImages[selectedRole]}
-                  resizeMode="cover"
-                  style={styles.coverimg}
-                />
-              </Center>
-    
-              {/* Scrollable Layout */}
-              <Layout customStyle={styles.customLayout}>
-                <VStack w={"90%"}>
-                  <Center>
-                    <VStack space={1} alignItems={"center"}>
-                      <Text style={styles.title}>My-GITAM</Text>
-                      <Text style={styles.title1}>
-                        Please login with My-GITAM credentials
-                      </Text>
-                    </VStack>
-                  </Center>
-    
-                  {error !== "" && (
-                    <Center>
-                      <Text bold mb="5" color={"#f00"}>
-                        {error}
-                      </Text>
-                    </Center>
-                  )}
-    
-                  <Stack
-                    direction="column"
-                    mb="2.5"
-                    mt="1.5"
-                    space={3}
-                    width={"100%"}
-                    bg={"#f7f0e4"}
-                  >
-                    {/* Role Selection Buttons */}
-                    <HStack space={4}>
-                      {["student", "staff","parent"].map((role) => (
-                        <Button
-                          key={role}
-                          size={"sm"}
-                          variant={"outline"}
-                          style={[
-                            styles.btn,
-                            selectedRole === role ? styles.btnactive : {},
-                          ]}
-                          onPress={() => setSelectedRole(role)}
-                        >
-                          <Text
-                            style={[
-                              styles.btntext,
-                              selectedRole === role ? styles.btnactivetext : {},
-                            ]}
-                          >
-                            {role.charAt(0).toUpperCase() + role.slice(1)}
-                          </Text>
-                        </Button>
-                      ))}
-                    </HStack>
-    {selectedRole=="parent" ? <>
-      <Input
-                      size="lg"
-                      placeholder="Enter Student ID"
-                      w="full"
-                      type="text"
-                      bg="white"
-                      style={styles.input}
-                      value={username}
-                      onChangeText={setUsername}
-                    />
-                    <Input
-                      size="lg"
-                      placeholder="Parent Mobile No"
-                      type="text"
-                      w="full"
-                      bg="white"
-                      value={password}
-                      onChangeText={setPassword}
-                    
-                    />
-    </>:<>
-                    <Input
-                      size="lg"
-                      placeholder={selectedRole=="student" ? "Enter Student ID" : "Enter Employee ID"}
-                      w="full"
-                      type="text"
-                      bg="white"
-                      value={username}
-                      onChangeText={setUsername}
-                    />
-                    <Input
-                      size="lg"
-                      placeholder="Password"
-                      type={showPassword ? "text" : "password"}
-                      w="full"
-                      bg="white"
-                      value={password}
-                      onChangeText={setPassword}
-                      InputRightElement={
-                        <IconButton
-                          icon={
-                            <Icon
-                              as={Ionicons}
-                              name={showPassword ? "eye-off" : "eye"}
-                            />
-                          }
-                          onPress={() => setShowPassword(!showPassword)}
-                        />
-                      }
-                    /></>}
-                    <Button
-                      bg={"#005A50"}
-                      mt="2"
-                      onPress={handleLogin}
-                      style={styles.shadowButton}
-                      disabled={loading}
-                    >
-                      {loading ? "Validating...." : "Sign In"}
-                    </Button>
-                  </Stack>
-    
-                  <Center>
-                    <HStack mt={4}>
-                      <Text>Powered by </Text>
-                      <Text color={"#005A50"} bold>
-                        CATS
-                      </Text>
-                    </HStack>
-                  </Center>
-                </VStack>
-              </Layout>
-    
-              
-            </ScrollView>
-          </ImageBackground>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
-    );
-    
- 
-};
+            {/* Header Logo */}
+            <View className="items-center mt-16">
+              <Image
+                source={require("../assets/gitam_logo_w.png")}
+                resizeMode="cover"
+                className="w-32 h-14"
+              />
+            </View>
 
-const styles = StyleSheet.create({
-  background: { flex: 1, justifyContent: 'center' },
-  container: { flex: 1 },
-  coverimg: { width: "50%", height: 200, marginBottom: -10 },
-  title: { fontSize: 21, fontWeight: "700", marginBottom: 10, textAlign: "center" },
-  title1: { fontSize: 16, marginBottom: 25, textAlign: "center" },
-  customLayout: { backgroundColor: "#f7f0e4", flex: 1, alignItems: "center", justifyContent: "center", borderTopLeftRadius: 40, borderTopRightRadius: 40 },
-  bannerImg: { width: 130, height: 55, marginBottom: 24 },
-  btn: { width: "30%", borderColor: "#ccc", borderRadius: 20 },
-  btntext: { color: "#ccc", fontSize: 16 },
-  btnactive: { borderColor: "#005A50", borderWidth: 2 },
-  btnactivetext: { color: "#005A50", fontWeight: "700" },
-  shadowButton: { elevation: 5 },
-});
+            {/* Dynamic Image Based on Role */}
+            <View className="items-center mt-8">
+              <Image
+                source={roleImages[selectedRole]}
+                resizeMode="cover"
+                className="w-48 h-48"
+              />
+            </View>
+
+            {/* Login Form */}
+            <View className="flex-1 bg-amber-50 rounded-t-3xl mt-8 px-6 pt-8">
+              <View className="items-center mb-6">
+                <Text className="text-2xl font-bold text-gray-800 mb-2">My-GITAM</Text>
+                <Text className="text-base text-gray-600 text-center">
+                  Please login with My-GITAM credentials
+                </Text>
+              </View>
+
+              {error !== "" && (
+                <View className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
+                  <Text className="text-red-600 text-center font-medium">{error}</Text>
+                </View>
+              )}
+
+              {/* Role Selection */}
+              <View className="flex-row justify-between mb-6">
+                {["student", "staff", "parent"].map((role) => (
+                  <TouchableOpacity
+                    key={role}
+                    onPress={() => setSelectedRole(role)}
+                    className={`flex-1 mx-1 py-3 rounded-2xl border-2 ${
+                      selectedRole === role
+                        ? "bg-primary-500 border-primary-500"
+                        : "bg-white border-gray-300"
+                    }`}
+                  >
+                    <Text
+                      className={`text-center font-semibold ${
+                        selectedRole === role ? "text-white" : "text-gray-600"
+                      }`}
+                    >
+                      {role.charAt(0).toUpperCase() + role.slice(1)}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              {/* Input Fields */}
+              <View className="space-y-4">
+                {selectedRole === "parent" ? (
+                  <>
+                    <View className="bg-white rounded-xl border border-gray-200">
+                      <Input
+                        placeholder="Enter Student ID"
+                        value={username}
+                        onChangeText={setUsername}
+                        className="text-base"
+                        variant="unstyled"
+                        px={4}
+                        py={3}
+                      />
+                    </View>
+                    <View className="bg-white rounded-xl border border-gray-200">
+                      <Input
+                        placeholder="Parent Mobile No"
+                        value={password}
+                        onChangeText={setPassword}
+                        className="text-base"
+                        variant="unstyled"
+                        px={4}
+                        py={3}
+                      />
+                    </View>
+                  </>
+                ) : (
+                  <>
+                    <View className="bg-white rounded-xl border border-gray-200">
+                      <Input
+                        placeholder={selectedRole === "student" ? "Enter Student ID" : "Enter Employee ID"}
+                        value={username}
+                        onChangeText={setUsername}
+                        className="text-base"
+                        variant="unstyled"
+                        px={4}
+                        py={3}
+                      />
+                    </View>
+                    <View className="bg-white rounded-xl border border-gray-200">
+                      <Input
+                        placeholder="Password"
+                        type={showPassword ? "text" : "password"}
+                        value={password}
+                        onChangeText={setPassword}
+                        className="text-base"
+                        variant="unstyled"
+                        px={4}
+                        py={3}
+                        InputRightElement={
+                          <IconButton
+                            icon={
+                              <Icon
+                                as={Ionicons}
+                                name={showPassword ? "eye-off" : "eye"}
+                                color="gray.400"
+                              />
+                            }
+                            onPress={() => setShowPassword(!showPassword)}
+                            mr={2}
+                          />
+                        }
+                      />
+                    </View>
+                  </>
+                )}
+
+                {/* Login Button */}
+                <TouchableOpacity
+                  onPress={handleLogin}
+                  disabled={loading}
+                  className={`py-4 rounded-xl mt-6 ${
+                    loading ? "bg-gray-400" : "bg-primary-600"
+                  } shadow-lg`}
+                >
+                  <Text className="text-white text-center text-lg font-semibold">
+                    {loading ? "Validating..." : "Sign In"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+              {/* Footer */}
+              <View className="items-center mt-8 mb-6">
+                <Text className="text-gray-600">
+                  Powered by <Text className="text-primary-600 font-bold">CATS</Text>
+                </Text>
+              </View>
+            </View>
+          </ScrollView>
+        </ImageBackground>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
+  );
+};
 
 export default Login;

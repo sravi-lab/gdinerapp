@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { HStack, IconButton, Text } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
-import { StyleSheet } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { updateCart } from "../../Store/Appdataslice";
  
@@ -50,55 +50,39 @@ const AddToCartButton = React.memo(({ item }) => {
         newTotal -= item.price;
       }
 
-      dispatch(updateCart({ mess_code: selected_mess_code,mess_name: selected_mess_name, total: newTotal, items: updatedItems }));
+      dispatch(updateCart({ mess_code: selected_mess_code, mess_name: selected_mess_name, total: newTotal, items: updatedItems }));
     },
     [dispatch, cart, item, itemInCart, count, selected_mess_code]
   );
 
   return count === 0 ? (
-    <IconButton
-      icon={<MaterialIcons name="add" size={18} color="white" />}
-      borderRadius="full"
-      style={styles.nrmlbtn1}
+    <TouchableOpacity
       onPress={() => handleCartUpdate("add")}
-      _pressed={{ bg: "green.600" }}
-    />
+      className="bg-primary-500 w-8 h-8 rounded-full items-center justify-center shadow-sm active:bg-primary-600"
+    >
+      <MaterialIcons name="add" size={18} color="white" />
+    </TouchableOpacity>
   ) : (
-    <HStack alignItems="center" space={2} backgroundColor={"#007467"} borderRadius={20} px={3} py={1}>
-      <IconButton
-        icon={<MaterialIcons name="remove" size={14} color="white" />}
-        borderRadius="full"
-        style={styles.nrmlbtn}
+    <View className="bg-primary-500 rounded-full px-3 py-1 flex-row items-center space-x-2">
+      <TouchableOpacity
         onPress={() => handleCartUpdate("remove")}
-        _pressed={{ bg: "red.600" }}
-      />
-      <Text fontSize={14} color={"#fff"}>{count}</Text>
-      <IconButton
-        icon={<MaterialIcons name="add" size={14} color="white" />}
-        borderRadius="full"
-        style={styles.nrmlbtn}
+        className="w-6 h-6 rounded-full bg-white/20 items-center justify-center active:bg-white/30"
+      >
+        <MaterialIcons name="remove" size={14} color="white" />
+      </TouchableOpacity>
+      
+      <Text className="text-white font-medium text-sm min-w-[20px] text-center">
+        {count}
+      </Text>
+      
+      <TouchableOpacity
         onPress={() => handleCartUpdate("add")}
-        _pressed={{ bg: "green.600" }}
-      />
-    </HStack>
+        className="w-6 h-6 rounded-full bg-white/20 items-center justify-center active:bg-white/30"
+      >
+        <MaterialIcons name="add" size={14} color="white" />
+      </TouchableOpacity>
+    </View>
   );
-});
-
-const styles = StyleSheet.create({
-  nrmlbtn: {
-    backgroundColor: "#007467",
-    paddingTop: 2,
-    paddingLeft: 2,
-    paddingBottom: 2,
-    paddingRight: 2,
-  },
-  nrmlbtn1:{
-    backgroundColor: "#007467",
-    paddingTop: 4,
-    paddingLeft: 4,
-    paddingBottom: 4,
-    paddingRight: 4,
-  }
 });
 
 export default AddToCartButton;

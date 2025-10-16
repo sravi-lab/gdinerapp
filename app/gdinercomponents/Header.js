@@ -3,11 +3,10 @@ import React from "react";
 import { Box, HStack, Image, StatusBar } from "native-base";
 import { useRouter } from "expo-router";
 import { useSelector } from "react-redux";
-import Ionicons from "react-native-vector-icons/Ionicons"; // Import vector icon
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 const Header = ({ title }) => {
   const router = useRouter();
- 
   const user = useSelector((state) => state.appdata.user);
   const location = useSelector((state) => state.appdata.location);
 
@@ -23,76 +22,41 @@ const Header = ({ title }) => {
 
   return (
     <>
-      <StatusBar backgroundColor={"#007367ba"} />
-      <Box bg="#007367" w="full">
-        <HStack
-          bg="#007367"
-          px="4"
-          py="4"
-          justifyContent="space-between"
-          alignItems="center"
-          w="100%"
-        >
+      <StatusBar backgroundColor={"#007367"} />
+      <View className="bg-primary-500 shadow-lg">
+        <View className="flex-row items-center justify-between px-4 py-4 pt-12">
           {/* Back Button */}
-          <TouchableOpacity onPress={goBack}>
-            <Image
-            alt="back"
-              source={require("../../assets/backArrow.png")}
-              style={styles.icon}
-            />
+          <TouchableOpacity 
+            onPress={goBack}
+            className="p-2 rounded-full active:bg-white/10"
+          >
+            <Ionicons name="arrow-back" size={24} color="#fff" />
           </TouchableOpacity>
-          <View style={styles.lgo}>
-          <Image
-            alt="back"
+
+          {/* Logo */}
+          <View className="flex-1 items-center">
+            <Image
               source={require("../../assets/dinerlogo.png")}
-              style={styles.logo}
+              alt="G-Diner Logo"
+              className="w-24 h-8"
+              resizeMode="contain"
             />
-            </View>
-          {/* Title */}
-          
+          </View>
 
           {/* Location Section */}
-          <TouchableOpacity style={styles.locationContainer} onPress={changeLocation}>
-            <Ionicons name="location-outline" size={22} color="#fff" />
-            <Text style={styles.locationText}>{location.name}</Text>
+          <TouchableOpacity 
+            onPress={changeLocation}
+            className="flex-row items-center bg-white/10 px-3 py-2 rounded-full"
+          >
+            <Ionicons name="location-outline" size={18} color="#fff" />
+            <Text className="text-white text-sm font-medium ml-1">
+              {location.name}
+            </Text>
           </TouchableOpacity>
-        </HStack>
-      </Box>
+        </View>
+      </View>
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  title: {
-    fontSize: 20,
-    fontWeight: "600",
-    color: "#fff",
-    width: "50%",
-    textAlign: "left",
-    paddingLeft: 10,
-  },
-  locationContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  locationText: {
-    color: "#fff",
-    fontSize: 16,
-    marginLeft: 5,
-  }, icon: {
-    width: 32,
-    height: 32,
-  },
-  logo:{
-    width:100,
-    height:30,
-    textAlign: "left",
-  },
-  lgo:{
-    width: "50%",
-    textAlign: "left",
-     
-  }
-});
 
 export default Header;

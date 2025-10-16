@@ -1,5 +1,5 @@
-import { ScrollView, Skeleton, Text, View, VStack } from "native-base";
-import { StyleSheet } from "react-native";
+import { ScrollView, Text, View, VStack } from "native-base";
+import { StyleSheet, RefreshControl } from "react-native";
 import { useSelector } from "react-redux";
 import { useContext, useEffect, useState } from "react";
 import Header from "../gdinercomponents/Header";
@@ -17,6 +17,7 @@ const GdinerRoot = () => {
 
   // 🔹 Search state
   const [search, setSearch] = useState("");
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     if (socketstate) {
@@ -29,59 +30,69 @@ const GdinerRoot = () => {
     cafe.mess_name.toLowerCase().includes(search.toLowerCase())
   ) || [];
 
+  const onRefresh = () => {
+    setRefreshing(true);
+    cmd.sendCommand("getcafelist", { getlist: "getlist", campus: user.campus });
+    setTimeout(() => setRefreshing(false), 1000);
+  };
+
   return (
-    <View style={styles.container}>
+    <View className="flex-1 bg-gray-50">
       <Header title={"G-Diner"} />
-      <SearchBar setSearch={setSearch} />
-      <Banners />
-      <Text style={styles.heading}>Cafes</Text>
+      
+      <ScrollView 
+        className="flex-1"
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Search Bar */}
+        <View className="px-4 pt-4">
+          <SearchBar setSearch={setSearch} />
+        </View>
 
-      {/* Scrollable content */}
-      <ScrollView style={styles.scrollView}>
-        {cafe_list.loader ? (
-           <VStack space={2}>
-            <Skeleton height={100} w={"91%"} marginX={15} borderRadius={10}/>
-            <Skeleton height={100} w={"91%"} marginX={15} borderRadius={10}/> 
-            <Skeleton height={100} w={"91%"} marginX={15} borderRadius={10}/>
-            <Skeleton height={100} w={"91%"} marginX={15} borderRadius={10}/> 
+        {/* Banners */}
+        <View className="mb-4">
+          <Banners />
+        </View>
 
-           </VStack>
-        ) : (
-          <CafeLists list={{ cafe_list: filteredCafes }} />
-        )}
-        
+        {/* Cafes Section */}
+        <View className="px-4 mb-4">
+          <Text className="text-xl font-semibold text-gray-800 mb-4">
+            Available Cafes
+          </Text>
+          
+          {cafe_list.loader ? (
+            <VStack space={3}>
+              {[1, 2, 3, 4].map((item) => (
+                <View key={item} className="bg-white rounded-xl p-4 shadow-sm">
+                  <View className="flex-row">
+                    <View className="flex-1 space-y-2">
+                      <View className="h-4 bg-gray-200 rounded animate-pulse" />
+                      <View className="h-3 bg-gray-200 rounded w-3/4 animate-pulse" />
+                      <View className="h-3 bg-gray-200 rounded w-1/2 animate-pulse" />
+                    </View>
+                    <View className="w-24 h-20 bg-gray-200 rounded-lg animate-pulse ml-4" />
+                  </View>
+                </View>
+              ))}
+            </VStack>
+          ) : (
+            <CafeLists list={{ cafe_list: filteredCafes }} />
+          )}
+        </View>
+
+        {/* Bottom spacing for fixed bottom bar */}
+        <View className="h-20" />
       </ScrollView>
 
-      {/* Fixed BottomBar */}
-      <View style={styles.bottomBarContainer}>
+      {/* Fixed Bottom Bar */}
+      <View className="absolute bottom-0 left-0 right-0">
         <BottomBar />
       </View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1, // Ensures the parent view takes full height
-  },
-  heading: {
-    fontSize: 20,
-    fontWeight: "500",
-    padding: 15,
-    paddingBottom:0
-  },
-  scrollView: {
-    flex: 1, // Makes the content scrollable while keeping BottomBar fixed
-    marginBottom: 60, // Prevents content from going behind BottomBar
-  },
-  bottomBarContainer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: "#fff", // Adjust if needed
-    elevation: 5, // For shadow effect on Android
-  },
-});
 
 export default GdinerRoot;

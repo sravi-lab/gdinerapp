@@ -8,84 +8,62 @@ import { useRouter } from "expo-router";
 import SocketContext from "./Connections/Socket";
 
 const CafeLists = ({ list }) => {
+  const dispatch = useDispatch(); 
+  const router = useRouter();
+  const ctx = useContext(SocketContext);
   
-  const dispatch=useDispatch(); 
-  const router=useRouter();
-  const ctx=useContext(SocketContext);
-  const handleClick=(item)=>{
-     
-          dispatch(updateSelectedMess({code:item.mess_code,name:item.mess_name,item}))
-          dispatch(menuListUpdate({ loader: true, data: [] }));
-
-          ctx.sendCommand('Get Menu', { 'mess_code': item.mess_code });
-          router.navigate("gdiner/CafeMenu")
-        }
+  const handleClick = (item) => {
+    dispatch(updateSelectedMess({code: item.mess_code, name: item.mess_name, item}))
+    dispatch(menuListUpdate({ loader: true, data: [] }));
+    ctx.sendCommand('Get Menu', { 'mess_code': item.mess_code });
+    router.navigate("gdiner/CafeMenu")
+  }
  
   return (
-    <View p={4}>
+    <View className="space-y-3">
       <FlatList
         data={list.cafe_list}
         keyExtractor={(item, index) => item.id ? item.id.toString() : index.toString()}
-        renderItem={({ item }) => {
-         
-          return <Pressable 
+        renderItem={({ item }) => (
+          <Pressable 
             onPress={() => handleClick(item)}
-            style={styles.box}
+            className="bg-white rounded-xl p-4 mb-3 shadow-sm border border-gray-100 active:bg-gray-50"
           >
             <HStack space={4} alignItems="center">
               {/* Text Section */}
-              <View flex={1}>
-                <Text fontSize="lg" fontWeight="bold" style={styles.mainhead}>
+              <View className="flex-1">
+                <Text className="text-lg font-bold text-primary-600 mb-1">
                   {item.mess_name}
                 </Text>
-                <Text color="gray.500">{item.campus}</Text>
+                <Text className="text-gray-500 text-sm mb-2">{item.campus}</Text>
                 <StarRating rating={item.rating} reviews={item.reviews}/>
+                
+                {/* Status Badge */}
+                <View className="flex-row items-center mt-2">
+                  <View className="w-2 h-2 bg-green-500 rounded-full mr-2" />
+                  <Text className="text-green-600 text-xs font-medium">Open Now</Text>
+                </View>
               </View>
 
               {/* Image Section */}
               {item.image && (
-                <View style={styles.ttt} >
-                    <Image
-                  alt={item.mess_name}
-                  source={{ uri: item.image }}
-                  width={"100%"}  
-                  height={"100%"}  
-                  borderRadius={10}
-                  resizeMode="cover"
-                  onError={(error) => console.log("Image Load Error:", error.nativeEvent.error)}
-                /></View>
+                <View className="w-24 h-20 rounded-lg overflow-hidden shadow-sm">
+                  <Image
+                    alt={item.mess_name}
+                    source={{ uri: item.image }}
+                    className="w-full h-full"
+                    resizeMode="cover"
+                    onError={(error) => console.log("Image Load Error:", error.nativeEvent.error)}
+                  />
+                </View>
               )}
             </HStack>
           </Pressable>
-        }}
+        )}
+        showsVerticalScrollIndicator={false}
       />
     </View>
   );
 };
-const styles = StyleSheet.create({
-    heading:{
-        fontSize:20,
-        fontWeight:500,
-        padding:15
-    },
-    ttt:{
-        width:150,
-        shadowColor:"#ccc",
-        elevation:1,
-        height:85,
-        borderRadius:10
-    },
-    box:{
-        backgroundColor: "#fff",
-        padding: 10,
-        marginBottom: 10,
-        borderRadius: 10,
-        borderWidth:1,
-        borderColor:"#ccc"
-        
-      },
-      mainhead:{
-        color:"#054f47"
-      }
-});
+
 export default CafeLists;

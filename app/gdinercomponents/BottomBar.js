@@ -2,20 +2,15 @@ import React from 'react';
 import { Box, Text, HStack, Center, Pressable, Icon, Badge } from 'native-base';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter, usePathname } from 'expo-router';
-import { useSelector } from 'react-redux'; // Assuming cart items are stored in Redux
+import { useSelector } from 'react-redux';
 
 function BottomBar() {
   const router = useRouter();
-  const pathname = usePathname(); // Get current route path
+  const pathname = usePathname();
 
-  // Get cart item count from Redux (assuming `cartItems` is an array in Redux store)
- const cart = useSelector((state) => state.appdata.cart) || [];
- 
-    // Calculate total amount and item count
-    const totalItems = cart.reduce((count, mess) => count + (mess.items ? mess.items.length : 0), 0);
- 
+  const cart = useSelector((state) => state.appdata.cart) || [];
+  const totalItems = cart.reduce((count, mess) => count + (mess.items ? mess.items.length : 0), 0);
 
-  // Define routes
   const tabs = [
     { name: 'Home', icon: 'home-outline', activeIcon: 'home', route: '/gdiner' },
     { name: 'Mess Card', icon: 'card-account-details-outline', route: '/gdiner/MessCard' },
@@ -24,51 +19,46 @@ function BottomBar() {
   ];
 
   return (
-    <Box bg="white" width="100%">
-      <HStack bg="#054f47" alignItems="center" safeAreaBottom shadow={6}>
+    <View className="bg-white border-t border-gray-200 shadow-lg">
+      <View className="flex-row items-center justify-around py-2 px-4 pb-6">
         {tabs.map((tab, index) => {
-          const isSelected = pathname === tab.route; // Check active tab
-          const showBadge = tab.name === 'Cart' && totalItems > 0; // Show badge only for Cart
+          const isSelected = pathname === tab.route;
+          const showBadge = tab.name === 'Cart' && totalItems > 0;
 
           return (
             <Pressable
               key={index}
-              cursor="pointer"
-              opacity={isSelected ? 1 : 0.5}
-              py="3"
-              flex={1}
-              onPress={() => router.push(tab.route)} // Navigate using `push`
+              onPress={() => router.push(tab.route)}
+              className={`flex-1 items-center py-2 ${isSelected ? 'opacity-100' : 'opacity-60'}`}
             >
-              <Center>
+              <View className="relative items-center">
                 {showBadge && (
-                  <Badge
-                    colorScheme="danger"
-                    rounded="full"
-                    mb={-4}
-                    mr={3}
-                    zIndex={1}
-                    variant="solid"
-                    alignSelf="flex-end"
-                    _text={{ fontSize: 10 }}
-                  >
-                    {totalItems}
-                  </Badge>
+                  <View className="absolute -top-2 -right-2 bg-red-500 rounded-full min-w-[18px] h-[18px] items-center justify-center z-10">
+                    <Text className="text-white text-xs font-bold">
+                      {totalItems > 99 ? '99+' : totalItems}
+                    </Text>
+                  </View>
                 )}
-                <Icon
-                  mb="1"
-                  as={<MaterialCommunityIcons name={isSelected ? tab.activeIcon || tab.icon : tab.icon} />}
-                  color="white"
-                  size="lg"
-                />
-                <Text color="white" fontSize="12">
+                
+                <View className={`p-2 rounded-full ${isSelected ? 'bg-primary-50' : ''}`}>
+                  <MaterialCommunityIcons 
+                    name={isSelected ? tab.activeIcon || tab.icon : tab.icon}
+                    size={24}
+                    color={isSelected ? '#007367' : '#6b7280'}
+                  />
+                </View>
+                
+                <Text className={`text-xs mt-1 ${
+                  isSelected ? 'text-primary-600 font-semibold' : 'text-gray-500'
+                }`}>
                   {tab.name}
                 </Text>
-              </Center>
+              </View>
             </Pressable>
           );
         })}
-      </HStack>
-    </Box>
+      </View>
+    </View>
   );
 }
 

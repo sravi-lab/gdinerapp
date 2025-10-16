@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { 
-    Badge, Button, VStack, Box, Text, HStack, Divider, Center, Icon, Pressable, 
-    Alert
+    Button, VStack, Box, Text, HStack, Divider, Alert, TouchableOpacity
 } from "native-base";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
@@ -29,7 +28,7 @@ function CheckoutBtn() {
     // Count total items
     const totalItems = cart.reduce((count, mess) => count + (mess.items ? mess.items.length : 0), 0);
 
-    const proccedToPay = () => {
+    const proceedToPay = () => {
         setDisablePay(true);
         ctx.sendCommand("Create Order", { cart, user_id: user.regdno, mess_type: "" });
     };
@@ -37,68 +36,73 @@ function CheckoutBtn() {
     useEffect(() => {
         if (order_status !== undefined && order_status.status === "failed") {
             const itemNames = order_status.unavailableItems.map(item => item.name).join(", ");
-            setErrMsg("List of items not available: " + itemNames);
-           setDisablePay(false);
+            setErrMsg("Items not available: " + itemNames);
+            setDisablePay(false);
         }
     }, [order_status]);
 
     return (
-        <Box 
-            p={4} 
-            bg="#fff7e9" 
-            shadow={2} 
-            borderRadius={10} 
-            mt={4} 
-            width="85%" 
-            marginLeft={"5%"} 
-            marginBottom={5}
-        >
-            <VStack space={3}>
-                {/* Cart Summary */}
-                <HStack justifyContent="space-between">
-                    <Text fontSize="sm" bold>Total Amount:</Text>
-                    <Text fontSize="sm">₹{totalAmount.toFixed(2)}</Text>
-                </HStack>
+        <View className="bg-white rounded-2xl p-4 shadow-lg border border-gray-100">
+            {/* Order Summary */}
+            <Text className="text-lg font-bold text-gray-800 mb-4">
+                Order Summary
+            </Text>
+            
+            <View className="space-y-3 mb-4">
+                <View className="flex-row justify-between">
+                    <Text className="text-gray-600">Subtotal ({totalItems} items)</Text>
+                    <Text className="font-medium">₹{totalAmount.toFixed(2)}</Text>
+                </View>
 
-                <HStack justifyContent="space-between">
-                    <Text fontSize="sm">Tax (5%):</Text>
-                    <Text fontSize="sm">₹{tax.toFixed(2)}</Text>
-                </HStack>
+                <View className="flex-row justify-between">
+                    <Text className="text-gray-600">Tax (5%)</Text>
+                    <Text className="font-medium">₹{tax.toFixed(2)}</Text>
+                </View>
 
-                <HStack justifyContent="space-between">
-                    <Text fontSize="sm">Convenience Fee:</Text>
-                    <Text fontSize="sm">₹{convenienceFee.toFixed(2)}</Text>
-                </HStack>
+                <View className="flex-row justify-between">
+                    <Text className="text-gray-600">Convenience Fee</Text>
+                    <Text className="font-medium">₹{convenienceFee.toFixed(2)}</Text>
+                </View>
 
-                <Divider />
+                <View className="border-t border-gray-200 pt-3">
+                    <View className="flex-row justify-between items-center">
+                        <Text className="text-lg font-bold text-gray-800">Total</Text>
+                        <Text className="text-xl font-bold text-primary-600">
+                            ₹{grandTotal.toFixed(2)}
+                        </Text>
+                    </View>
+                </View>
+            </View>
 
-                <HStack justifyContent="space-between">
-                    <Text fontSize="md" bold>Grand Total:</Text>
-                    <Text fontSize="md" bold>₹{grandTotal.toFixed(2)}</Text>
-                </HStack>
-{errmsg && <Alert colorScheme={"red"}><Text>{errmsg}</Text></Alert>}
-                {/* Checkout Button */}
-                <Pressable >
-                    <VStack>
-                        <Button 
-                        onPress={() => proccedToPay()}
-                            disabled={disablePay}
-                            borderRadius="15" 
-                            w={"100%"} 
-                            mx="auto" 
-                            p="3" 
-                            bg={disablePay ? "#ccc" : "#054f47"} 
-                            _text={{ fontSize: 14 }}
-                        >
-                            <HStack alignItems={"center"}>
-                                <Icon color="#f3e5cb" as={MaterialCommunityIcons} name="cart" size="md" />
-                                <Text color="white" fontSize="md" ml={2}>Checkout</Text>
-                            </HStack>
-                        </Button>
-                    </VStack>
-                </Pressable>
-            </VStack>
-        </Box>
+            {/* Error Message */}
+            {errmsg && (
+                <View className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
+                    <Text className="text-red-600 text-sm">{errmsg}</Text>
+                </View>
+            )}
+
+            {/* Checkout Button */}
+            <TouchableOpacity
+                onPress={proceedToPay}
+                disabled={disablePay || totalAmount === 0}
+                className={`py-4 rounded-xl flex-row items-center justify-center space-x-2 ${
+                    disablePay || totalAmount === 0 
+                        ? 'bg-gray-300' 
+                        : 'bg-primary-500 active:bg-primary-600'
+                }`}
+            >
+                <MaterialCommunityIcons 
+                    name="cart-check" 
+                    size={20} 
+                    color={disablePay || totalAmount === 0 ? "#9ca3af" : "white"} 
+                />
+                <Text className={`text-lg font-semibold ${
+                    disablePay || totalAmount === 0 ? 'text-gray-500' : 'text-white'
+                }`}>
+                    {disablePay ? 'Processing...' : 'Proceed to Payment'}
+                </Text>
+            </TouchableOpacity>
+        </View>
     );
 }
 

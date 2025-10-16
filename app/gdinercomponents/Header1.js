@@ -3,74 +3,58 @@ import React from "react";
 import { Box, HStack, StatusBar } from "native-base";
 import { useRouter } from "expo-router";
 import { useSelector } from "react-redux";
+import { Ionicons } from "@expo/vector-icons";
 
-const Header1 = ({ title,path }) => {
+const Header1 = ({ title, path }) => {
   const router = useRouter();
-  const goBack = () => {
-    if(path!='' && path!=undefined){
-      router.push(path);
-    }else
-    router.push("/gdiner");
-  };
   const user = useSelector((state) => state.appdata.user);
+  
+  const goBack = () => {
+    if (path && path !== '') {
+      router.push(path);
+    } else {
+      router.push("/gdiner");
+    }
+  };
+
   const [image1, setImage] = React.useState();
-   React.useEffect(() => {
+  
+  React.useEffect(() => {
     if (user.islogged) {
-      if (user.role == "student") {
-        setImage(
-          "https://doeresults.gitam.edu/photo/img.aspx?id=" + user.regdno
-        );
+      if (user.role === "student") {
+        setImage(`https://doeresults.gitam.edu/photo/img.aspx?id=${user.regdno}`);
       } else {
         setImage("");
       }
     }
   }, [user]);
+
   return (
     <>
-    <StatusBar backgroundColor={"#007367ba"}></StatusBar>
-      <Box StatusBar bg="#007367" w="full">
-        <HStack
-          bg="#007367"
-          px="4"
-          py="3"
-          justifyContent="space-between"
-          alignItems="center"
-          w="100%"
-        >
-          <TouchableOpacity onPress={goBack}>
-            <Image
-              source={require("../../assets/backArrow.png")}
-              style={styles.img}
-            />
+      <StatusBar backgroundColor={"#007367"} />
+      <View className="bg-primary-500 shadow-lg">
+        <View className="flex-row items-center justify-between px-4 py-4 pt-12">
+          {/* Back Button */}
+          <TouchableOpacity 
+            onPress={goBack}
+            className="p-2 rounded-full active:bg-white/10"
+          >
+            <Ionicons name="arrow-back" size={24} color="#fff" />
           </TouchableOpacity>
-          <Text style={styles.title}>{title}</Text>
-          {/* <View></View> */}
-          <View style={styles.profile}/>
-        </HStack>
-      </Box>
+
+          {/* Title */}
+          <View className="flex-1 items-center">
+            <Text className="text-white text-lg font-semibold" numberOfLines={1}>
+              {title}
+            </Text>
+          </View>
+
+          {/* Right Space (for balance) */}
+          <View className="w-10 h-10" />
+        </View>
+      </View>
     </>
   );
 };
-const styles = StyleSheet.create({
-  icon: {
-    width: 32,
-    height: 32,
-  },
-  img: {
-    width: 32,
-    height: 32,
-  },
-  profile: {
-    width: 42,
-    height: 42,
-    borderRadius: 100,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: "semibold",
-    color: "#fff",
-    width:"60%",
-    textAlign:"center"
-  },
-});
+
 export default Header1;

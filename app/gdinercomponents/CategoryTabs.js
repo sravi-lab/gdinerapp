@@ -1,75 +1,55 @@
 import { HStack, ScrollView, Button, Text } from "native-base";
 import { useSelector } from "react-redux";
-import { useState } from "react";
-import { StyleSheet } from "react-native";
-import { Fab } from 'native-base';
+import { TouchableOpacity } from "react-native";
 
-const CategoryTabs = ({setSelectedCategory,selectedCategory}) => {
+const CategoryTabs = ({ setSelectedCategory, selectedCategory }) => {
   const menu_list = useSelector((state) => state.dinerdata.menu_list);
- 
 
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false} mb={5} >
-      <HStack space={2} paddingHorizontal={15}  >
-        
+    <ScrollView 
+      horizontal 
+      showsHorizontalScrollIndicator={false} 
+      className="mb-4"
+      contentContainerStyle={{ paddingHorizontal: 16 }}
+    >
+      <HStack space={3}>
         {/* "All" Category Button */}
-        <Button
+        <TouchableOpacity
           onPress={() => setSelectedCategory("All")}
-          variant={selectedCategory === "All" ? "solid" : "outline"}
-          style={selectedCategory === "All" ? styles.selectedButton : styles.button}
+          className={`px-4 py-2 rounded-full border ${
+            selectedCategory === "All"
+              ? "bg-primary-500 border-primary-500"
+              : "bg-white border-gray-300"
+          }`}
         >
-          <Text style={selectedCategory === "All" ? styles.selectedBtnText : styles.btnText}>
+          <Text className={`font-medium ${
+            selectedCategory === "All" ? "text-white" : "text-gray-600"
+          }`}>
             All
           </Text>
-        </Button>
+        </TouchableOpacity>
 
         {/* Dynamic Categories */}
         {menu_list?.data?.map((item, index) => (
-          <Button
+          <TouchableOpacity
             key={index}
             onPress={() => setSelectedCategory(item.category)}
-            variant={selectedCategory === item.category ? "solid" : "outline"}
-            style={selectedCategory === item.category ? styles.selectedButton : styles.button}
+            className={`px-4 py-2 rounded-full border ${
+              selectedCategory === item.category
+                ? "bg-primary-500 border-primary-500"
+                : "bg-white border-gray-300"
+            }`}
           >
-            <Text style={selectedCategory === item.category ? styles.selectedBtnText : styles.btnText}>
+            <Text className={`font-medium capitalize ${
+              selectedCategory === item.category ? "text-white" : "text-gray-600"
+            }`}>
               {item.category}
             </Text>
-          </Button>
+          </TouchableOpacity>
         ))}
       </HStack>
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  button: {
-    borderRadius: 20,
-    paddingTop: 8,
-    paddingBottom: 8,
-    paddingHorizontal: 15,
-    borderColor: "#ccc",
-  },
-  selectedButton: {
-    borderRadius: 20,
-    paddingTop: 8,
-    paddingBottom: 8,
-    paddingHorizontal: 15,
-    backgroundColor: "#007467",
-  },
-  btnText: {
-    fontSize: 12,
-    paddingHorizontal: 10,
-    color: "#007467",
-    height:22,
-    textTransform:"capitalize"
-  },
-  selectedBtnText: {
-    fontSize: 12,
-    paddingHorizontal: 10,
-    color: "#fff",
-    height:22,
-     textTransform:"capitalize"
-  },
-});
 
 export default CategoryTabs;
